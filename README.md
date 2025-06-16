@@ -1,4 +1,4 @@
-# darwin-bot – case genai (grupo boticário)
+# darwin-bot
 
 assistente virtual implementado em python que usa **retrieval‑augmented generation (rag)** para responder, em português, perguntas baseadas *exclusivamente* no livro **“a origem das espécies” (charles darwin, 1859)**.
 
