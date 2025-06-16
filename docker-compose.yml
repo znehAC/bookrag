@@ -1,0 +1,40 @@
+services:
+  db:
+    image: pgvector/pgvector:pg14
+    container_name: vectorstorage
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-rag}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-rag}" ]
+      interval: 2s
+      timeout: 3s
+      retries: 40
+    networks:
+      - network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  pgdata:
